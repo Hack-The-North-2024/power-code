@@ -1,6 +1,6 @@
-import "./App.css";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import "./App.css";
 
 function App() {
   const tasks = useQuery(api.tasks.get);
@@ -12,4 +12,3 @@ function App() {
 }
 
 export default App;
-
