@@ -49,11 +49,11 @@ io.on("connection", (socket) => {
       games[gameCode] = { players: [] };
     }
 
-    // Check if the game already has two players
-    if (games[gameCode].players.length >= 2) {
-      socket.emit("gameFull", "This game already has two players.");
-      return;
-    }
+    // // Check if the game already has two players
+    // if (games[gameCode].players.length >= 2) {
+    //   socket.emit("gameFull", "This game already has two players.");
+    //   return;
+    // }
 
     games[gameCode].players.push(socket.id);
 

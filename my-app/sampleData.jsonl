@@ -1,3 +1,4 @@
-{"player1": "player1-id-1", "player2": "player2-id-1", "question": "What is 2 + 2?", "player1Code": "", "player2Code": "", "status": "in-progress", "winner": ""}
-{"player1": "player1-id-2", "player2": "player2-id-2", "question": "What is the capital of France?", "player1Code": "", "player2Code": "", "status": "in-progress", "winner": ""}
-{"player1": "player1-id-3", "player2": "player2-id-3", "question": "Write a function to sort an array", "player1Code": "", "player2Code": "", "status": "finished", "winner": "player1-id-3"}
+{"username": "alice123", "password": "hashed_password_1", "name": "Alice", "score": 1200}
+{"username": "bob456", "password": "hashed_password_2", "name": "Bob", "score": 1350}
+{"username": "charlie789", "password": "hashed_password_3", "name": "Charlie", "score": 1400}
+{"username": "david321", "password": "hashed_password_4", "name": "David", "score": 1500}

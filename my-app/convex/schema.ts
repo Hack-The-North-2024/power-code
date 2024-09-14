@@ -13,9 +13,11 @@ export default defineSchema({
   }),
 
   players: defineTable({
+    username: v.string(), // Player's username for login
+    password: v.string(), // Player's hashed password
     name: v.string(), // Player's name
     score: v.number(), // Player's score or ranking
-  }),
+  }),  
 
   tasks: defineTable({
     text: v.string(),

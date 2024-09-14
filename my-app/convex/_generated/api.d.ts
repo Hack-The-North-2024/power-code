@@ -18,6 +18,7 @@ import type {
 import type * as functions_createGame from "../functions/createGame.js";
 import type * as functions_submitCode from "../functions/submitCode.js";
 import type * as games from "../games.js";
+import type * as players from "../players.js";
 import type * as tasks from "../tasks.js";
 
 /**
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   "functions/createGame": typeof functions_createGame;
   "functions/submitCode": typeof functions_submitCode;
   games: typeof games;
+  players: typeof players;
   tasks: typeof tasks;
 }>;
 export declare const api: FilterApi<
