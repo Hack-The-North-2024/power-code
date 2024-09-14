@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api"; // Adjust the path as necessary
+import { useParams } from 'react-router-dom';
 
 const socket = io("http://localhost:3001");
 
@@ -11,21 +12,23 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const createGameMutation = useMutation(api.games.createGame);
-
+  const joinGameMutation = useMutation(api.games.joinGame); 
+  
+  const { player } = useParams();
   const handleCreateGame = async () => {
     try {
       // Replace these with actual logic to obtain player IDs
-      const player1Id = "player1-id"; // Replace with actual player ID
-      const player2Id = "player2-id"; // Replace with actual player ID
+
+      const player1Id = player ?? ''; // Replace with actual player ID
       const question = "Sample Question"; // Replace with the actual question or remove if not needed
       
       // Call the createGame mutation
-      const newGame = await createGameMutation({ player1Id, player2Id, question });
+      const newGame = await createGameMutation({player1Id, question });
 
       // Check if newGame includes the game code
       if (newGame && newGame) {
         // Navigate to the game page with the new game code
-        navigate(`/game/${newGame}`);
+        navigate(`/game/${player1Id}/${newGame}`);
       } else {
         console.error("Failed to create game, no game code returned.");
       }
@@ -34,9 +37,27 @@ const LandingPage = () => {
     }
   };
 
-  const handleJoinGame = () => {
+  const handleJoinGame = async () => {
     if (gameCode) {
-      navigate(`/game/${gameCode}`);
+      try {  
+        const player2Id = player ?? '';
+        // Call the mutation to join the game with the gameCode
+        const result = await joinGameMutation({
+          gameId: gameCode, // The game code or ID to join
+          player2Id: player2Id, // Replace this with the actual player2Id (e.g., from context or state)
+        });
+  
+        if (result) {
+          // If the mutation is successful, navigate to the game page
+          navigate(`/game/${player2Id}/${gameCode}`);
+        } else {
+          console.error("Failed to join the game.");
+        }
+      } catch (error) {
+        console.error("Error joining the game:", error);
+      }
+    } else {
+      console.warn("Game code is missing.");
     }
   };
 
