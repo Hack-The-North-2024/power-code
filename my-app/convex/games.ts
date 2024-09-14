@@ -77,3 +77,30 @@ export const checkPlayersConnected = query({
         return bothPlayersConnected;
     },
 });
+
+export const gameWinner = mutation({
+    args: {
+      gameId: v.string(),
+      playerId: v.string(),
+    },
+    handler: async (ctx, args) => {
+      const { gameId, playerId } = args;
+  
+      // Find the game by querying for the gameId
+      
+      const game = await ctx.db.query("games").filter(q => q.eq(q.field("_id"), gameId)).first();
+
+      // Check if the game exists
+      if (!game) {
+        throw new Error(`Game with ID ${gameId} not found.`);
+      }
+  
+      // Update the game record by adding player2Id to the game
+      await ctx.db.patch(game._id, {
+        winner: playerId,
+      });
+  
+      return gameId;  // Return the game ID after the update
+    },
+  });
+  
