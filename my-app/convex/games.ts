@@ -1,5 +1,13 @@
 import { mutation } from "./_generated/server";
+import { query } from "./_generated/server";
 import { v } from "convex/values";
+
+export const get = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("games").collect();
+  },
+});
 
 // Create a new game with the given player IDs and question
 export const createGame = mutation({

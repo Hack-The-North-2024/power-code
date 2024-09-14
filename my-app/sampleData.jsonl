@@ -1,3 +1,3 @@
-{"text": "Buy groceries", "isCompleted": true}
-{"text": "Go for a swim", "isCompleted": true}
-{"text": "Integrate Convex", "isCompleted": false}
+{"player1": "player1-id-1", "player2": "player2-id-1", "question": "What is 2 + 2?", "player1Code": "", "player2Code": "", "status": "in-progress", "winner": ""}
+{"player1": "player1-id-2", "player2": "player2-id-2", "question": "What is the capital of France?", "player1Code": "", "player2Code": "", "status": "in-progress", "winner": ""}
+{"player1": "player1-id-3", "player2": "player2-id-3", "question": "Write a function to sort an array", "player1Code": "", "player2Code": "", "status": "finished", "winner": "player1-id-3"}

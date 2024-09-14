@@ -1,14 +1,19 @@
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./LandingPage";
+import GamePage from "./GamePage";
 
-function App() {
-  const tasks = useQuery(api.tasks.get);
+const App = () => {
   return (
-    <div className="App">
-      {tasks?.map(({ _id, text }) => <div key={_id}>{text}</div>)}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/game/:code" element={<GamePage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

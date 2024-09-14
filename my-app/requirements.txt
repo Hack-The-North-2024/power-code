@@ -1,0 +1,5 @@
+https://docs.convex.dev/quickstart/react
+@monaco-editor/react
+socket.io-client
+express socket.io
+cors
