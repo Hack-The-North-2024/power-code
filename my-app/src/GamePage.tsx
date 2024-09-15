@@ -253,6 +253,7 @@ const handleSubmitCode = async () => {
         width="100%"
         language="python"
         value={code}
+        defaultValue="def solution(inp):"
         theme="vs-dark"
         onChange={(newCode) => setCode(newCode || "")}
       />
