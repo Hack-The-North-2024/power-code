@@ -2,14 +2,6 @@ import React, { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api"; // Adjust the path as necessary
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Typography,
-} from "@mui/material";
 
 const LoginSignupPage = () => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
@@ -59,84 +51,53 @@ const LoginSignupPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) handleLogin();
-    else handleSignup();
+    isLogin ? handleLogin() : handleSignup();
   };
-  
+
   return (
-    <Box
-      className="auth-container h-[100%] flex flex-col justify-center items-center"
-      sx={{
-        border: '1px dashed #ccc', // Light gray border for contrast
-        backgroundColor: '#f5f5f5', // Light background for better readability
-        borderRadius: '8px', // Rounded corners
-        padding: 4, // Add some padding
-      }}
-    >
-      <Typography
-        sx={{ paddingBottom: 3, color: '#333' }} // Darker text color for better readability
-        variant="h4"
-      >
-        {isLogin ? 'Login' : 'Sign Up'}
-      </Typography>
-      <FormControl
-        component="form" // Ensure the FormControl is treated as a form
-        onSubmit={handleSubmit}
-        sx={{ width: '100%', maxWidth: '600px' }} // Restrict width for better layout
-      >
+    <div className="auth-container">
+      <h2>{isLogin ? "Login" : "Sign Up"}</h2>
+      <form onSubmit={handleSubmit}>
         {!isLogin && (
-          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-            <FormLabel sx={{ width: '150px', marginRight: 2 }}>Name</FormLabel>
-            <Input
+          <div>
+            <label>Name</label>
+            <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required={!isLogin}
               placeholder="Enter your name"
-              sx={{ flex: 1 }} // Allow the input to take up remaining space
             />
-          </Box>
+          </div>
         )}
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-          <FormLabel sx={{ width: '150px', marginRight: 2 }}>Username</FormLabel>
-          <Input
+        <div>
+          <label>Username</label>
+          <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            placeholder="Enter a username"
-            sx={{ flex: 1 }} // Allow the input to take up remaining space
+            placeholder="Enter username"
           />
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-          <FormLabel sx={{ width: '150px', marginRight: 2 }}>Password</FormLabel>
-          <Input
+        </div>
+        <div>
+          <label>Password</label>
+          <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Enter a password"
-            sx={{ flex: 1 }} // Allow the input to take up remaining space
+            placeholder="Enter password"
           />
-        </Box>
-        {error && <Typography sx={{ color: 'red', marginBottom: 2 }}>{error}</Typography>}
-        <Button
-          sx={{ marginTop: 2, backgroundColor: '#007bff', color: '#fff', '&:hover': { backgroundColor: '#0056b3' } }}
-          type="submit"
-        >
-          {isLogin ? 'Login' : 'Sign Up'}
-        </Button>
-        <Button
-          sx={{ marginTop: 2, color: '#007bff', '&:hover': { textDecoration: 'underline' } }}
-          onClick={handleToggle}
-        >
-          {isLogin
-            ? 'Need to create an account? Sign Up'
-            : 'Already have an account? Login'}
-        </Button>
-      </FormControl>
-    </Box>
-  );  
-}
+        </div>
+        {error && <p className="error">{error}</p>}
+        <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
+      </form>
+      <button onClick={handleToggle}>
+        {isLogin ? "Need to create an account? Sign Up" : "Already have an account? Login"}
+      </button>
+    </div>
+  );
+};
 
 export default LoginSignupPage;
