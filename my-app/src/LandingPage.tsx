@@ -17,10 +17,9 @@ const LandingPage = () => {
       // Replace these with actual logic to obtain player IDs
 
       const player1Id = player ?? ''; // Replace with actual player ID
-      const question = "Sample Question"; // Replace with the actual question or remove if not needed
       
       // Call the createGame mutation
-      const newGame = await createGameMutation({player1Id, question });
+      const newGame = await createGameMutation({player1Id});
 
       // Check if newGame includes the game code
       if (newGame && newGame) {
