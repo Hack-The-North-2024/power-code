@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api"; // Adjust the path as necessary
 import { useParams } from 'react-router-dom';
-
-const socket = io("http://localhost:3001");
 
 const LandingPage = () => {
   const [gameCode, setGameCode] = useState<string>("");

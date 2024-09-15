@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import { useParams } from "react-router-dom";
 import { useMutation } from "convex/react";
-import { query } from "../convex/_generated/server";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import axios from 'axios';
@@ -59,8 +57,15 @@ const GamePage = () => {
 const handleSubmitCode = async () => {
     try {
         const currentPlayer = player ?? '';
+        const gameId = game ?? '';
         const result = await submitCode(code, currentPlayer);
         console.log(result);
+        if (result) {
+              await gameWinner({
+                  winner: currentPlayer,  // Set the player as the winner
+                  gameId: gameId,  // Use the actual game ID
+              });
+          }
     } catch (error) {
         console.error('Error submitting code:', error);
     }
