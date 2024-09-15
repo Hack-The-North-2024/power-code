@@ -81,10 +81,10 @@ export const checkPlayersConnected = query({
 export const gameWinner = mutation({
     args: {
       gameId: v.string(),
-      playerId: v.string(),
+      winner: v.string(),
     },
     handler: async (ctx, args) => {
-      const { gameId, playerId } = args;
+      const { gameId, winner } = args;
   
       // Find the game by querying for the gameId
       
@@ -97,10 +97,35 @@ export const gameWinner = mutation({
   
       // Update the game record by adding player2Id to the game
       await ctx.db.patch(game._id, {
-        winner: playerId,
+        winner: winner,
       });
   
-      return gameId;  // Return the game ID after the update
+      return winner;  // Return the game ID after the update
     },
-  });
+});
   
+
+export const checkWin = query({
+    args: { gameId: v.string() },  // Accepts game ID as an argument
+    handler: async (ctx, args) => {
+        const { gameId } = args;
+
+        // Find the game with the specified gameId
+        const game = await ctx.db.query("games").filter(q => q.eq(q.field("_id"), gameId)).first();
+        
+        // If no game is found, return false
+        if (!game) {
+        return { hasWinner: false, winner: null };
+        }
+
+        // Check if the winner field is not empty
+        const hasWinner = game.winner !== "";
+
+        // Log the result
+        console.log("Winner: " + game.winner);
+        console.log("Has winner: " + hasWinner);
+
+        // Return the result as an object
+        return { hasWinner, winner: game.winner || null };
+    },
+});
