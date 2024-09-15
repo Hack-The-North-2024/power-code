@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api"; // Adjust the path as necessary
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Typography,
+} from "@mui/material";
 
 const LoginSignupPage = () => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
@@ -51,52 +59,59 @@ const LoginSignupPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    isLogin ? handleLogin() : handleSignup();
+    if (isLogin) handleLogin();
+    else handleSignup();
   };
 
   return (
-    <div className="auth-container">
-      <h2>{isLogin ? "Login" : "Sign Up"}</h2>
-      <form onSubmit={handleSubmit}>
+    <Box className="auth-container h-[100%] flex flex-col justify-center items-center">
+      <Typography sx={{ paddingBottom: 3 }} variant="h4">
+        {isLogin ? "Login" : "Sign Up"}
+      </Typography>
+      <FormControl onSubmit={handleSubmit}>
         {!isLogin && (
-          <div>
-            <label>Name</label>
-            <input
+          <Box>
+            <FormLabel>Name </FormLabel>
+            <Input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required={!isLogin}
               placeholder="Enter your name"
             />
-          </div>
+          </Box>
         )}
-        <div>
-          <label>Username</label>
-          <input
+        <Box>
+          <FormLabel>Username </FormLabel>
+          <Input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            placeholder="Enter username"
+            placeholder="Enter a username"
           />
-        </div>
-        <div>
-          <label>Password</label>
-          <input
+        </Box>
+        <Box>
+          <FormLabel>Password </FormLabel>
+          <Input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Enter password"
+            placeholder="Enter a password"
           />
-        </div>
+        </Box>
         {error && <p className="error">{error}</p>}
-        <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
-      </form>
-      <button onClick={handleToggle}>
-        {isLogin ? "Need to create an account? Sign Up" : "Already have an account? Login"}
-      </button>
-    </div>
+        <Button sx={{ paddingTop: 3 }} type="submit">
+          {isLogin ? "Login" : "Sign Up"}
+        </Button>
+        <Button onClick={handleToggle}>
+          {isLogin
+            ? "Need to create an account? Sign Up"
+            : "Already have an account? Login"}
+        </Button>
+      </FormControl>
+    </Box>
   );
 };
 
