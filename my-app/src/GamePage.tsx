@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import { useParams } from "react-router-dom";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
 
 interface ApiResponse {
   success: number;
@@ -23,6 +23,16 @@ interface FunctionDetails {
   difficulty: number;
 }
 
+const buttonStyle = {
+  marginTop: '20px',
+  padding: '10px 20px',
+  fontSize: '1rem',
+  color: '#fff',
+  backgroundColor: '#007bff', // Blue color
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
+};
 
 const functions = [
   {
@@ -97,6 +107,7 @@ const functions = [
   }
 ];
 
+
 function getFunctionById(id: string): FunctionDetails | null {
   const func = functions.find(func => func.id === id);
   return func ?? null;
@@ -109,11 +120,13 @@ const getRandomFunction = () => {
 let selectedFunction: FunctionDetails | null = null;
 
 const GamePage = () => {
+  const navigate = useNavigate();
   const gameWinner = useMutation(api.games.gameWinner); 
   const gameQuestion = useMutation(api.games.gameQuestion); 
   
   const [code, setCode] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [dots, setDots] = useState<string>("");
 
   const { game } = useParams();
   const { player } = useParams();
@@ -123,15 +136,46 @@ const GamePage = () => {
     const checkQuestion = useQuery(api.games.checkQuestion, { gameId: game }); 
     var opponentConnected = useQuery(api.games.checkPlayersConnected, { gameId: game });
     console.log("bothPlayersConnected game page" + opponentConnected)
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setDots((prevDots) => (prevDots.length < 3 ? prevDots + "." : ""));
+      }, 500); // Adjust the speed as needed
+      return () => clearInterval(interval); // Clean up on unmount
+    }, []); // Empty dependency array to run effect only once on mount
+  
+    // Conditional rendering based on opponentConnected
     if (!opponentConnected) {
-      return <h1>Waiting for opponent...</h1>;
+      return (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h1 style={{ fontSize: "2rem" }}>Waiting for opponent{dots}</h1>
+          <h2 style={{ marginTop: "40px", fontSize: "1.5rem", color: "#ff7f00" }}>
+            Game Code:
+            <br />
+            <span style={{ fontWeight: "bold" }}>{game}</span>
+          </h2>
+        </div>
+      );
     }
+    const handleGoToLanding = () => {
+      navigate(`/landing/${player}`);
+    };
+
     if (checkWin?.hasWinner) {
-      if (checkWin.winner==player){
-        return <h1>You won!</h1>;
-      } else{
-        return <h1>You Lost :(</h1>;
-      }
+      return (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          {checkWin?.winner === player ? (
+            <div>
+              <h1>You won!</h1>
+              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+            </div>
+          ) : (
+            <div>
+              <h1>You Lost :(</h1>
+              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+            </div>
+          )}
+        </div>
+      );
     }
     if (checkQuestion?.hasQuestion){
       const currentQuestion = checkQuestion.question ?? '';
