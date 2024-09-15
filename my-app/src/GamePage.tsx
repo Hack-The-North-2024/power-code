@@ -33,6 +33,16 @@ const buttonStyle = {
   borderRadius: '5px',
   cursor: 'pointer',
 };
+const buttonStyle = {
+  marginTop: '20px',
+  padding: '10px 20px',
+  fontSize: '1rem',
+  color: '#fff',
+  backgroundColor: '#007bff', // Blue color
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
+};
 
 const functions = [
   {
@@ -107,6 +117,7 @@ const functions = [
   }
 ];
 
+
 function getFunctionById(id: string): FunctionDetails | null {
   return functions.find(func => func.id === id) ?? null;
 }
@@ -152,6 +163,16 @@ const GamePage = () => {
           </h2>
         </div>
       );
+      return (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h1 style={{ fontSize: "2rem" }}>Waiting for opponent{dots}</h1>
+          <h2 style={{ marginTop: "40px", fontSize: "1.5rem", color: "#ff7f00" }}>
+            Game Code:
+            <br />
+            <span style={{ fontWeight: "bold" }}>{game}</span>
+          </h2>
+        </div>
+      );
     }
 
     const handleGoToLanding = () => {
@@ -159,6 +180,21 @@ const GamePage = () => {
     };
 
     if (checkWin?.hasWinner) {
+      return (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          {checkWin?.winner === player ? (
+            <div>
+              <h1>You won!</h1>
+              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+            </div>
+          ) : (
+            <div>
+              <h1>You Lost :(</h1>
+              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+            </div>
+          )}
+        </div>
+      );
       return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
           {checkWin?.winner === player ? (
