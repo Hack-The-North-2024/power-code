@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect  } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import { useParams } from "react-router-dom";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import axios from 'axios';
+import { Button, Grid, Typography, Alert, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface ApiResponse {
   success: number;
-  data?: any; // Replace `any` with the actual type if you know it
-  // Add other fields as needed
+  data?: any;
   error?: string;
   description?: string;
 }
@@ -109,8 +109,7 @@ const functions = [
 
 
 function getFunctionById(id: string): FunctionDetails | null {
-  const func = functions.find(func => func.id === id);
-  return func ?? null;
+  return functions.find(func => func.id === id) ?? null;
 }
 
 const getRandomFunction = () => {
@@ -120,18 +119,17 @@ const getRandomFunction = () => {
 let selectedFunction: FunctionDetails | null = null;
 
 const GamePage = () => {
+  const gameWinner = useMutation(api.games.gameWinner);
+  const gameQuestion = useMutation(api.games.gameQuestion);
   const navigate = useNavigate();
-  const gameWinner = useMutation(api.games.gameWinner); 
-  const gameQuestion = useMutation(api.games.gameQuestion); 
   
   const [code, setCode] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [dots, setDots] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const { game } = useParams();
-  const { player } = useParams();
-  
-  if (game){
+  const { game, player } = useParams();
+  if (game) {
     const checkWin = useQuery(api.games.checkWin, { gameId: game }); 
     const checkQuestion = useQuery(api.games.checkQuestion, { gameId: game }); 
     var opponentConnected = useQuery(api.games.checkPlayersConnected, { gameId: game });
@@ -142,7 +140,7 @@ const GamePage = () => {
       }, 500); // Adjust the speed as needed
       return () => clearInterval(interval); // Clean up on unmount
     }, []); // Empty dependency array to run effect only once on mount
-  
+
     // Conditional rendering based on opponentConnected
     if (!opponentConnected) {
       return (
@@ -155,12 +153,38 @@ const GamePage = () => {
           </h2>
         </div>
       );
+      return (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h1 style={{ fontSize: "2rem" }}>Waiting for opponent{dots}</h1>
+          <h2 style={{ marginTop: "40px", fontSize: "1.5rem", color: "#ff7f00" }}>
+            Game Code:
+            <br />
+            <span style={{ fontWeight: "bold" }}>{game}</span>
+          </h2>
+        </div>
+      );
     }
+
     const handleGoToLanding = () => {
       navigate(`/landing/${player}`);
     };
 
     if (checkWin?.hasWinner) {
+      return (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          {checkWin?.winner === player ? (
+            <div>
+              <h1>You won!</h1>
+              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+            </div>
+          ) : (
+            <div>
+              <h1>You Lost :(</h1>
+              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+            </div>
+          )}
+        </div>
+      );
       return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
           {checkWin?.winner === player ? (
@@ -189,83 +213,83 @@ const GamePage = () => {
     }
   }
 
-  const submitCode = (code: string, player: string): Promise<ApiResponse> => {
+  const submitCode = async (code: string, player: string): Promise<ApiResponse> => {
     if (!selectedFunction) {
-      return Promise.reject(new Error("No function selected"));
+      throw new Error("No function selected");
     }
-    return new Promise((resolve, reject) => {
-      var url =""
-        if (selectedFunction){
-          url='https://power-code-047dc2136570.herokuapp.com/api/code-check/python/'+selectedFunction.id
-        } 
-        axios.post(url, {
-            code: code,
-            user_id: player,  // Replace with actual user ID
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                // Add other headers if needed, such as authorization
-            }
-        })
-        .then(response => {
-            // Resolve the promise with the response data
-            resolve(response.data);
-        })
-        .catch(error => {
-            // Reject the promise with the error
-            reject(error);
-        });
-    });
-};
 
-// Usage example
-const handleSubmitCode = async () => {
+    const url = `https://power-code-047dc2136570.herokuapp.com/api/code-check/python/${selectedFunction.id}`;
+
     try {
-        const currentPlayer = player ?? '';
-        const gameId = game ?? '';
-        const result: ApiResponse = await submitCode(code, currentPlayer);
-        console.log(result);
-        if (result.success === 0) {
-            await gameWinner({
-                winner: currentPlayer,  // Set the player as the winner
-                gameId: gameId,  // Use the actual game ID
-            });
-        }
-        else if(result.success === 1){
-          setErrorMessage("Correct Syntax But fails test cases.");
-        }
-        else if(result.success>2){
-          setErrorMessage(".\n"+result.error+"\n"+result.description);
-        }
-        else{
-          setErrorMessage("Submission failed or the code is incorrect.");
-        }
+      const response = await axios.post(url, { code, user_id: player });
+      return response.data;
     } catch (error) {
-        console.error('Error submitting code:', error);
+      throw new Error("Error submitting code");
     }
-};
-  
+  };
+
+  const handleSubmitCode = async () => {
+    setLoading(true);
+    setErrorMessage("");
+    
+    try {
+      const currentPlayer = player ?? '';
+      const gameId = game ?? '';
+      const result = await submitCode(code, currentPlayer);
+      
+      if (result.success === 0) {
+        await gameWinner({ winner: currentPlayer, gameId });
+      } else if (result.success === 1) {
+        setErrorMessage("Correct Syntax, but it fails test cases.");
+      } else if (result.success > 2) {
+        setErrorMessage(`${result.error}: ${result.description}`);
+      } else {
+        setErrorMessage("Submission failed or the code is incorrect.");
+      }
+    } catch (error) {
+      setErrorMessage("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+    <Grid container direction="column" alignItems="center" justifyContent="center" style={{ width: '100vh', height: '100vh', padding: '20px' }}>
       {selectedFunction ? (
         <>
-          <h2>{selectedFunction.name}</h2>
-          <h2>{selectedFunction.description}</h2>
+          <Typography variant="h4">{selectedFunction.name}</Typography>
+          <Typography variant="subtitle1">{selectedFunction.description}</Typography>
         </>
       ) : (
-        <h2>Loading function details...</h2>
+        <Typography variant="h4">Loading function details...</Typography>
       )}
+
       <MonacoEditor
-        height="400px"
-        width="400px"
+        height="60%"
+        defaultValue="def solution(inp):"
+        width="100%"
         language="python"
         value={code}
         theme="vs-dark"
         onChange={(newCode) => setCode(newCode || "")}
       />
-      <button onClick={handleSubmitCode}>Submit Code</button>
-      {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
-    </div>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmitCode}
+        disabled={loading}
+        style={{ marginTop: '20px' }}
+      >
+        {loading ? <CircularProgress size={24} /> : "Submit Code"}
+      </Button>
+
+      {errorMessage && (
+        <Alert severity="error" style={{ marginTop: '20px', width: '600px' }}>
+          {errorMessage}
+        </Alert>
+      )}
+    </Grid>
   );
 };
 
