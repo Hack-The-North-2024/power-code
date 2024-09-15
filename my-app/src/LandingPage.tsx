@@ -54,9 +54,10 @@ const LandingPage = () => {
     }
   };
 
-  const handleLanguageChange = (event: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
+  const handleLanguageChange = (_: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
     setLanguage(newLanguage);
   };
+  
 
   return (
     <Box 
