@@ -33,7 +33,7 @@ const GamePage = () => {
 
   const submitCode = (code: string, player: string) => {
     return new Promise((resolve, reject) => {
-        axios.post('https://cors-anywhere.herokuapp.com/https://power-code-047dc2136570.herokuapp.com/api/code-check/python/sum-even', {
+        axios.post('https://power-code-047dc2136570.herokuapp.com/api/code-check/python/sum-even', {
             code: code,
             user_id: player,  // Replace with actual user ID
         }, {
