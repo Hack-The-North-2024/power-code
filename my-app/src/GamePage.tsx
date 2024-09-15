@@ -33,16 +33,6 @@ const buttonStyle = {
   borderRadius: '5px',
   cursor: 'pointer',
 };
-const buttonStyle = {
-  marginTop: '20px',
-  padding: '10px 20px',
-  fontSize: '1rem',
-  color: '#fff',
-  backgroundColor: '#007bff', // Blue color
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-};
 
 const functions = [
   {
