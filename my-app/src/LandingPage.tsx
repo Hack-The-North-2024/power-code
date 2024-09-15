@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "convex/react";
-import { api } from "../convex/_generated/api";
+import { api } from "../convex/_generated/api"; // Adjust the path as necessary
 import { useParams } from 'react-router-dom';
 import { Box, Button, Input, Typography, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
@@ -14,15 +14,18 @@ const LandingPage = () => {
   const joinGameMutation = useMutation(api.games.joinGame); 
   
   const { player } = useParams();
-
   const handleCreateGame = async () => {
     try {
-      const player1Id = player ?? '';
-      const question = "Sample Question"; 
-      
-      const newGame = await createGameMutation({player1Id, question });
+      // Replace these with actual logic to obtain player IDs
 
+      const player1Id = player ?? ''; // Replace with actual player ID
+      
+      // Call the createGame mutation
+      const newGame = await createGameMutation({player1Id});
+
+      // Check if newGame includes the game code
       if (newGame && newGame) {
+        // Navigate to the game page with the new game code
         navigate(`/game/${player1Id}/${newGame}`);
       } else {
         console.error("Failed to create game, no game code returned.");
@@ -32,16 +35,22 @@ const LandingPage = () => {
     }
   };
 
+  const handleLanguageChange = (_: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
+    setLanguage(newLanguage);
+  };
+
   const handleJoinGame = async () => {
     if (gameCode) {
       try {  
         const player2Id = player ?? '';
+        // Call the mutation to join the game with the gameCode
         const result = await joinGameMutation({
-          gameId: gameCode, 
-          player2Id: player2Id,
+          gameId: gameCode, // The game code or ID to join
+          player2Id: player2Id, // Replace this with the actual player2Id (e.g., from context or state)
         });
   
         if (result) {
+          // If the mutation is successful, navigate to the game page
           navigate(`/game/${player2Id}/${gameCode}`);
         } else {
           console.error("Failed to join the game.");
@@ -53,11 +62,6 @@ const LandingPage = () => {
       console.warn("Game code is missing.");
     }
   };
-
-  const handleLanguageChange = (_: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
-    setLanguage(newLanguage);
-  };
-  
 
   return (
     <Box 
@@ -181,4 +185,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
