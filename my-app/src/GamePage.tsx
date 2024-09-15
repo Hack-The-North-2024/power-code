@@ -71,13 +71,6 @@ const functions = [
     difficulty: 1
   },
   {
-    id: "prime",
-    name: "Prime",
-    description: "Check if a number is prime or not. Example: For input 7, output is true; for input 9, output is false.",
-    numberOfArgs: 1,
-    difficulty: 1
-  },
-  {
     id: "greater-number",
     name: "Greater Number",
     description: "Find the greater number between two values. Example: For input [3, 5], output is 5.",
@@ -256,10 +249,11 @@ const handleSubmitCode = async () => {
         <h2>Loading function details...</h2>
       )}
       <MonacoEditor
-        height="400px"
-        width="400px"
+        height="800px"
+        width="100%"
         language="python"
         value={code}
+        defaultValue="def solution(inp):"
         theme="vs-dark"
         onChange={(newCode) => setCode(newCode || "")}
       />
