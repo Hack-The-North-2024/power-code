@@ -6,6 +6,8 @@ import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import NavBar from "../src/NavBar";
+import logo from './assets/logo.png'
 
 interface ApiResponse {
   success: number;
@@ -139,14 +141,28 @@ const GamePage = () => {
     // Conditional rendering based on opponentConnected
     if (!opponentConnected) {
       return (
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
-          <h1 style={{ fontSize: "2rem" }}>Waiting for opponent{dots}</h1>
-          <h2 style={{ marginTop: "40px", fontSize: "1.5rem", color: "#ff7f00" }}>
-            Game Code:
-            <br />
-            <span style={{ fontWeight: "bold" }}>{game}</span>
-          </h2>
+        <div className="min-h-screen flex flex-col items-center justify-start py-8" style={{ paddingTop: '10rem' }}>
+          <NavBar></NavBar>
+          <div 
+            style={{ 
+              textAlign: "center", 
+              marginTop: "50px", 
+              backgroundColor: "white", 
+              borderRadius: "10px", 
+              padding: "140px", 
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" 
+            }}
+          >
+            <h1 style={{ fontSize: "2rem" }}>Waiting for opponent{dots}</h1>
+            <h2 style={{ marginTop: "40px", fontSize: "1.5rem", color: "#ff7f00" }}>
+              Game Code:
+              <br />
+              <span style={{ fontWeight: "bold" }}>{game}</span>
+            </h2>
+          </div>
         </div>
+
+
       );
     }
     const handleGoToLanding = () => {

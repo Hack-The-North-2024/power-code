@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api"; // Adjust the path as necessary
-import { useParams } from 'react-router-dom';
 import { Box, Button, Input, Typography, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import TypingEffect from './TypingEffect'; // Import the TypingEffect component
+import logo from './assets/logo.png'
+import NavBar from "../src/NavBar";
 
 const LandingPage = () => {
   const [gameCode, setGameCode] = useState<string>("");
@@ -14,18 +16,13 @@ const LandingPage = () => {
   const joinGameMutation = useMutation(api.games.joinGame); 
   
   const { player } = useParams();
+
   const handleCreateGame = async () => {
     try {
-      // Replace these with actual logic to obtain player IDs
-
       const player1Id = player ?? ''; // Replace with actual player ID
-      
-      // Call the createGame mutation
-      const newGame = await createGameMutation({player1Id});
+      const newGame = await createGameMutation({ player1Id });
 
-      // Check if newGame includes the game code
       if (newGame && newGame) {
-        // Navigate to the game page with the new game code
         navigate(`/game/${player1Id}/${newGame}`);
       } else {
         console.error("Failed to create game, no game code returned.");
@@ -43,14 +40,12 @@ const LandingPage = () => {
     if (gameCode) {
       try {  
         const player2Id = player ?? '';
-        // Call the mutation to join the game with the gameCode
         const result = await joinGameMutation({
-          gameId: gameCode, // The game code or ID to join
-          player2Id: player2Id, // Replace this with the actual player2Id (e.g., from context or state)
+          gameId: gameCode,
+          player2Id: player2Id,
         });
   
         if (result) {
-          // If the mutation is successful, navigate to the game page
           navigate(`/game/${player2Id}/${gameCode}`);
         } else {
           console.error("Failed to join the game.");
@@ -64,46 +59,29 @@ const LandingPage = () => {
   };
 
   return (
+    
     <Box 
       className="h-[100%] flex flex-col justify-center items-center"
       sx={{
-        backgroundColor: '#f5f5f5', 
-        padding: 4, 
+        backgroundColor: '#ffffff', 
+        padding: 9, 
+        borderRadius: '16px',
+        maxWidth: '800px',
       }}
     >
-      <Typography
-        variant="h2"
-        sx={{
-          fontWeight: 'bold',
-          marginBottom: 4,
-          textAlign: 'center',
-          color: '#333',
-        }}
-      >
-        PowerCode.
-      </Typography>
-      
-      <Typography
-        variant="h6"
-        sx={{
-          marginBottom: 4,
-          textAlign: 'center',
-          color: '#666',
-        }}
-      >
-        Welcome to PowerCode, a game where you can put your skills to the test
-        and play in a fierce one-on-one match with friends and family to decide
-        who is the better programmer once and for all.
-      </Typography>
+      <NavBar></NavBar>
+      <TypingEffect 
+        text="Welcome to PowerCode, a game where you can put your skills to the test and play in a fierce one-on-one match with friends and family to decide who is the better programmer once and for all!"
+      />
       
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          width: '100%',
-          maxWidth: 600,
+          width: '400px',
           marginBottom: 4,
+          borderRadius: '16px',
         }}
       >
         <Button
@@ -132,49 +110,55 @@ const LandingPage = () => {
           />
           <Button
             variant="contained"
-            color="secondary"
             onClick={handleJoinGame}
+            sx={{
+              backgroundColor: '#ffaa64',
+              color: 'white', // Change text color if needed
+              '&:hover': {
+                backgroundColor: '#e09e4c', // Optional: change color on hover
+              },
+            }}
           >
             Join Game
           </Button>
         </Box>
         
         <Typography
-        variant="h6"
-        sx={{
-          marginBottom: 1,
-          textAlign: 'center',
-          color: '#333', // Darker color for better visibility
-        }}
-      >
-        Select your programming language:
-      </Typography>
+          variant="h6"
+          sx={{
+            marginBottom: 1,
+            textAlign: 'center',
+            color: '#333',
+          }}
+        >
+          Select your programming language:
+        </Typography>
         
-      <ToggleButtonGroup
+        <ToggleButtonGroup
           value={language}
           exclusive
           onChange={handleLanguageChange}
           aria-label="Programming Language"
-          sx={{ marginBottom: 4, width: '100%' }} // Ensure full width
+          sx={{ marginBottom: 4, width: '100%' }}
         >
           <ToggleButton
             value="Python"
             aria-label="Python"
-            sx={{ flex: 1, textAlign: 'center' }} // Ensure equal size and centered text
+            sx={{ flex: 1, textAlign: 'center' }}
           >
             Python
           </ToggleButton>
           <ToggleButton
             value="C"
             aria-label="C"
-            sx={{ flex: 1, textAlign: 'center' }} // Ensure equal size and centered text
+            sx={{ flex: 1, textAlign: 'center' }}
           >
             C
           </ToggleButton>
           <ToggleButton
             value="Java"
             aria-label="Java"
-            sx={{ flex: 1, textAlign: 'center' }} // Ensure equal size and centered text
+            sx={{ flex: 1, textAlign: 'center' }}
           >
             Java
           </ToggleButton>

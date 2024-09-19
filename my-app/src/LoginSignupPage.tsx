@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { useMutation } from "convex/react";
-import { api } from "../convex/_generated/api"; // Adjust the path as necessary
+import { api } from "../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Input, Typography, FormControl, FormLabel } from "@mui/material";
+import NavBar from "../src/NavBar";
 
-const LoginSignupPage = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
+const LoginSignupPage: React.FC = () => {
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // Only used for signup
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-
   const createPlayerMutation = useMutation(api.players.createPlayer);
   const loginPlayerMutation = useMutation(api.players.loginPlayer);
 
@@ -20,18 +19,11 @@ const LoginSignupPage = () => {
 
   const handleSignup = async () => {
     try {
-      const score = 1000; // Default starting score for new players
-      const newPlayerId = await createPlayerMutation({
-        username,
-        password,
-        name,
-        score,
-      });
-      console.log("Signup successful. Player ID:", newPlayerId);
+      const score = 1000; 
+      const newPlayerId = await createPlayerMutation({ username, password, name, score });
       navigate(`/landing/${newPlayerId}`);
     } catch (error) {
       setError("Signup failed. Please try again.");
-      console.error("Error during signup:", error);
     }
   };
 
@@ -39,14 +31,12 @@ const LoginSignupPage = () => {
     try {
       const playerId = await loginPlayerMutation({ username, password });
       if (playerId) {
-        console.log("Login successful. Player ID:", playerId);
         navigate(`/landing/${playerId}`);
       } else {
         setError("Invalid credentials. Please try again.");
       }
     } catch (error) {
       setError("Login failed. Please try again.");
-      console.error("Error during login:", error);
     }
   };
 
@@ -56,79 +46,77 @@ const LoginSignupPage = () => {
   };
 
   return (
-    <Box
-      className="auth-container h-[100%] flex flex-col justify-center items-center"
-      sx={{
-        border: '1px dashed #ccc', // Light gray border for contrast
-        backgroundColor: '#f5f5f5', // Light background for better readability
-        borderRadius: '8px', // Rounded corners
-        padding: 4, // Add some padding
-      }}
-    >
-      <Typography
-        sx={{ paddingBottom: 3, color: '#333' }} // Darker text color for better readability
-        variant="h4"
-      >
-        {isLogin ? 'Login' : 'Sign Up'}
-      </Typography>
-      <FormControl
-        component="form" // Ensure the FormControl is treated as a form
-        onSubmit={handleSubmit}
-        sx={{ width: '100%', maxWidth: '600px' }} // Restrict width for better layout
-      >
-        {!isLogin && (
-          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-            <FormLabel sx={{ width: '150px', marginRight: 2 }}>Name</FormLabel>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required={!isLogin}
-              placeholder="Enter your name"
-              sx={{ flex: 1 }} // Allow the input to take up remaining space
-            />
-          </Box>
-        )}
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-          <FormLabel sx={{ width: '150px', marginRight: 2 }}>Username</FormLabel>
-          <Input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            placeholder="Enter a username"
-            sx={{ flex: 1 }} // Allow the input to take up remaining space
-          />
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-          <FormLabel sx={{ width: '150px', marginRight: 2 }}>Password</FormLabel>
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="Enter a password"
-            sx={{ flex: 1 }} // Allow the input to take up remaining space
-          />
-        </Box>
-        {error && <Typography sx={{ color: 'red', marginBottom: 2 }}>{error}</Typography>}
-        <Button
-          sx={{ marginTop: 2, backgroundColor: '#007bff', color: '#fff', '&:hover': { backgroundColor: '#0056b3' } }}
-          type="submit"
-        >
+    <div className="min-h-screen flex flex-col items-center justify-start py-8" style={{ paddingTop: '10rem' }}>
+      <NavBar />
+      {/* Animated slogan */}
+      <div className="slogan mb-8 p-8">
+        <h1 className="text-3xl font-bold text-white animate-fadeIn">
+          A 1vs1 coding duel where only the best will win!
+        </h1>
+      </div>
+
+
+      {/* Form container */}
+      <div className="bg-white border border-gray-300 rounded-lg p-6 shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">
           {isLogin ? 'Login' : 'Sign Up'}
-        </Button>
-        <Button
-          sx={{ marginTop: 2, color: '#007bff', '&:hover': { textDecoration: 'underline' } }}
-          onClick={handleToggle}
-        >
-          {isLogin
-            ? 'Need to create an account? Sign Up'
-            : 'Already have an account? Login'}
-        </Button>
-      </FormControl>
-    </Box>
-  ); 
+        </h2>
+        <form onSubmit={handleSubmit}>
+          {!isLogin && (
+            <div className="mb-4 flex items-center">
+              <label className="w-32 text-right mr-4 font-medium">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required={!isLogin}
+                placeholder="Enter your name"
+                className="flex-1 border border-gray-300 rounded p-2"
+              />
+            </div>
+          )}
+          <div className="mb-4 flex items-center">
+            <label className="w-32 text-right mr-4 font-medium">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Enter a username"
+              className="flex-1 border border-gray-300 rounded p-2"
+            />
+          </div>
+          <div className="mb-4 flex items-center">
+            <label className="w-32 text-right mr-4 font-medium">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter a password"
+              className="flex-1 border border-gray-300 rounded p-2"
+            />
+          </div>
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+          <button
+            type="submit"
+            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 w-full"
+          >
+            {isLogin ? 'Login' : 'Sign Up'}
+          </button>
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="mt-4 text-blue-500 hover:underline w-full"
+          >
+            {isLogin
+              ? 'Need to create an account? Sign Up'
+              : 'Already have an account? Login'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default LoginSignupPage;

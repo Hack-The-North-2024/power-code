@@ -5,8 +5,11 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'pastel-orange': '#FFAB76', // Define your pastel orange color
+      },
+    },
   },
   plugins: [],
 }
-
