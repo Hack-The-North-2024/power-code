@@ -7,7 +7,6 @@ import { api } from "../convex/_generated/api";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import NavBar from "../src/NavBar";
-import logo from './assets/logo.png'
 
 interface ApiResponse {
   success: number;

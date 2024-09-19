@@ -4,7 +4,6 @@ import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api"; // Adjust the path as necessary
 import { Box, Button, Input, Typography, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import TypingEffect from './TypingEffect'; // Import the TypingEffect component
-import logo from './assets/logo.png'
 import NavBar from "../src/NavBar";
 
 const LandingPage = () => {
