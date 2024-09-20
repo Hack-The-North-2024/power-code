@@ -76,18 +76,18 @@ const LoginSignupPage: React.FC = () => {
             </div>
           )}
           <div className="mb-4 flex items-center">
-            <label className="w-32 text-right mr-4 font-medium">Username</label>
+            <label className="w-32 text-right mr-4 font-medium text-black">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
               placeholder="Enter a username"
-              className="flex-1 border border-gray-300 rounded p-2"
+              className="flex-1 border border-gray-300 rounded p-2 bg-white"
             />
           </div>
           <div className="mb-4 flex items-center">
-            <label className="w-32 text-right mr-4 font-medium">Password</label>
+            <label className="w-32 text-right mr-4 font-medium text-black bg-white">Password</label>
             <input
               type="password"
               value={password}
