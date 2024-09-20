@@ -56,7 +56,7 @@ const LandingPage = () => {
       console.warn("Game code is missing.");
     }
   };
-
+  const text="  Welcome to PowerCode, a game where you can put your skills to the test and play in a fierce one-on-one match with friends and family to decide who is the better programmer once and for all!"
   return (
     
     <Box 
@@ -72,7 +72,7 @@ const LandingPage = () => {
     >
       <NavBar></NavBar>
       <TypingEffect 
-        text="Welcome to PowerCode, a game where you can put your skills to the test and play in a fierce one-on-one match with friends and family to decide who is the better programmer once and for all!"
+        text={text}
       />
       
       <Box
