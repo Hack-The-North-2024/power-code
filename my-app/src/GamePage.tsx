@@ -183,7 +183,7 @@ const GamePage = () => {
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
           <NavBar></NavBar>
           {checkWin?.winner === player ? (
-            <div style={{ textAlign: 'center', marginBottom: '20px', padding: '200px'}}>
+            <div style={{ textAlign: 'center', marginBottom: '20px', padding: '300px'}}>
               <Confetti
               />
               <h1>You won!</h1>
