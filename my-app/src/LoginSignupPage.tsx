@@ -83,7 +83,7 @@ const LoginSignupPage: React.FC = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
               placeholder="Enter a username"
-              className="flex-1 border border-gray-300 rounded p-2 bg-white"
+              className="flex-1 border border-gray-300 rounded p-2 bg-whit text-black"
             />
           </div>
           <div className="mb-4 flex items-center">
@@ -94,7 +94,7 @@ const LoginSignupPage: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Enter a password"
-              className="flex-1 border border-gray-300 rounded p-2"
+              className="flex-1 border border-gray-300 rounded p-2 bg-white text-black"
             />
           </div>
           {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -107,7 +107,7 @@ const LoginSignupPage: React.FC = () => {
           <button
             type="button"
             onClick={handleToggle}
-            className="mt-4 text-blue-500 hover:underline w-full"
+            className="mt-4 text-blue-500 hover:underline w-full bg-white"
           >
             {isLogin
               ? 'Need to create an account? Sign Up'
