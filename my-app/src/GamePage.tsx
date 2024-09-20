@@ -7,6 +7,8 @@ import { api } from "../convex/_generated/api";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import NavBar from "../src/NavBar";
+import './index.css';
+import Confetti from 'react-confetti';
 
 interface ApiResponse {
   success: number;
@@ -14,6 +16,14 @@ interface ApiResponse {
   // Add other fields as needed
   error?: string;
   description?: string;
+}
+
+interface TestCase {
+  success: number;
+  input: number[] | string | number;
+  solution: number[] | string | number | boolean;
+  returned: number;
+  error: string;
 }
 
 interface FunctionDetails {
@@ -171,11 +181,17 @@ const GamePage = () => {
     if (checkWin?.hasWinner) {
       return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <NavBar></NavBar>
           {checkWin?.winner === player ? (
-            <div>
+            <div style={{ textAlign: 'center', marginBottom: '20px', padding: '200px'}}>
+              <Confetti
+              />
               <h1>You won!</h1>
-              <button onClick={handleGoToLanding} style={buttonStyle}>Go to Landing Page</button>
+              <button onClick={handleGoToLanding} style={buttonStyle}>
+                Go to Landing Page
+              </button>
             </div>
+            
           ) : (
             <div>
               <h1>You Lost :(</h1>
@@ -229,52 +245,118 @@ const GamePage = () => {
 // Usage example
 const handleSubmitCode = async () => {
     try {
-        const currentPlayer = player ?? '';
-        const gameId = game ?? '';
-        const result: ApiResponse = await submitCode(code, currentPlayer);
-        console.log(result);
-        if (result.success === 0) {
-            await gameWinner({
-                winner: currentPlayer,  // Set the player as the winner
-                gameId: gameId,  // Use the actual game ID
-            });
-        }
-        else if(result.success === 1){
-          setErrorMessage("Correct Syntax But fails test cases.");
-        }
-        else if(result.success>2){
-          setErrorMessage(".\n"+result.error+"\n"+result.description);
-        }
-        else{
+      const currentPlayer = player ?? '';
+      const gameId = game ?? '';
+      const result: ApiResponse = await submitCode(code, currentPlayer);
+      console.log(result);
+      if (result.success === 0) {
+        // Player wins the game
+        await gameWinner({
+            winner: currentPlayer,
+            gameId: gameId,
+        });
+      } else if (result.success === 1) {
+          const failedCases = (result.data as TestCase[]) // Cast to TestCase[]
+              .filter(testCase => testCase.success === 1 || testCase.success === 2) // Filter failed test cases
+              .map(testCase => {
+                // Determine how to format the input based on its type
+                let inputStr: string;
+                if (Array.isArray(testCase.input)) {
+                  inputStr = `[${testCase.input.join(", ")}]`; // Format array as comma-separated
+                } else if (typeof testCase.input === 'string') {
+                  inputStr = `"${testCase.input}"`; // Wrap string inputs in quotes
+                } else if (typeof testCase.input === 'number') {
+                  inputStr = testCase.input.toString(); // Convert number to string
+                } else {
+                  inputStr = "Unknown input type"; // Fallback case
+                }
+            
+                // Determine how to format the solution based on its type
+                let solutionStr: string;
+                if (Array.isArray(testCase.solution)) {
+                  solutionStr = `[${testCase.solution.join(", ")}]`; // Format array as comma-separated
+                } else if (typeof testCase.solution === 'string') {
+                  solutionStr = `"${testCase.solution}"`; // Wrap string solutions in quotes
+                } else if (typeof testCase.solution === 'number') {
+                  solutionStr = testCase.solution.toString(); // Convert number to string
+                } else if (typeof testCase.solution === 'boolean') {
+                  solutionStr = testCase.solution ? "true" : "false"; // Handle boolean values
+                } else {
+                  solutionStr = "Unknown solution type"; // Fallback case
+                }
+            
+                // Format and return the string for each test case
+                return `Input: ${inputStr} - Expected: ${solutionStr}, Returned: ${testCase.returned}, Error: ${testCase.error} |`;
+              })
+              .join("\n"); // Join the details with new lines
+          console.log(failedCases)
+          setErrorMessage(`Correct syntax but fails test cases:\n${failedCases}`);
+      } else if (result.success > 1) {
+          setErrorMessage(`${result.error}\n${result.description}`);
+      } else {
           setErrorMessage("Submission failed or the code is incorrect.");
-        }
+      }
+      
     } catch (error) {
         console.error('Error submitting code:', error);
     }
 };
   
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      {selectedFunction ? (
-        <>
-          <h2>{selectedFunction.name}</h2>
-          <h2>{selectedFunction.description}</h2>
-        </>
-      ) : (
-        <h2>Loading function details...</h2>
-      )}
+    <div className="wrapper" style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#f5f5f5', 
+      padding: '20px',
+      marginTop:'120px',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)', 
+      borderRadius: '20px', // Rounded corners
+    }}>
+      <NavBar />
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        {selectedFunction ? (
+          <>
+            <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>{selectedFunction.name}</h2>
+            <p style={{ fontSize: '18px', color: '#666', margin: '10px 0' }}>{selectedFunction.description}</p>
+          </>
+        ) : (
+          <h2 style={{ color: '#999' }}>Loading function details...</h2>
+        )}
+      </div>
       <MonacoEditor
-        height="800px"
-        width="100%"
+        height="300px"
+        width="500px"
         language="python"
         value={code}
         defaultValue="def solution(inp):"
         theme="vs-dark"
         onChange={(newCode) => setCode(newCode || "")}
       />
-      <button onClick={handleSubmitCode}>Submit Code</button>
-      {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+      <button 
+        onClick={handleSubmitCode} 
+        style={{
+          marginTop: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#ffaa64', // Custom color
+          border: 'none',
+          borderRadius: '5px',
+          color: '#fff',
+          fontSize: '16px',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s',
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e59e52'} // Darker on hover
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffaa64'} // Original color
+      >
+        Submit Code
+      </button>
+      {errorMessage && (
+        <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>
+      )}
     </div>
+    
   );
 };
 

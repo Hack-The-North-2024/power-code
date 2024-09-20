@@ -87,3 +87,22 @@ button:focus-visible {
   animation: fadeIn 3s ease-in-out forwards; /* Run once and keep the final state */
 }
 
+.wrapper {
+  display: flex;
+  flex-direction: column; /* Align children vertically */
+  align-items: center;    /* Center children horizontally */
+  justify-content: flex-start; /* Start from top */
+  height: 100%;           /* Allow it to take full height */
+  overflow-y: auto;      /* Enable vertical scrolling */
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+}
+
+.shake {
+  animation: shake 0.5s;
+}

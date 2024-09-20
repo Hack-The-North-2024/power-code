@@ -66,6 +66,8 @@ const LandingPage = () => {
         padding: 9, 
         borderRadius: '16px',
         maxWidth: '800px',
+        marginTop:'110px',
+        marginBottom:'110px',
       }}
     >
       <NavBar></NavBar>
