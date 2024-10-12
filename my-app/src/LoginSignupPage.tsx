@@ -76,7 +76,7 @@ const LoginSignupPage: React.FC = () => {
             </div>
           )}
           <div className="mb-4 flex items-center">
-            <label className="w-32 text-right mr-4 font-medium text-black">Username</label>
+            <label className="w-32 text-right mr-4 font-medium text-black bg-white">Username</label>
             <input
               type="text"
               value={username}
