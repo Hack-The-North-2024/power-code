@@ -64,14 +64,14 @@ const LoginSignupPage: React.FC = () => {
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className="mb-4 flex items-center">
-              <label className="w-32 text-right mr-4 font-medium">Name</label>
+              <label className="w-32 text-right mr-4 font-medium bg-white text-black">Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required={!isLogin}
                 placeholder="Enter your name"
-                className="flex-1 border border-gray-300 rounded p-2"
+                className="flex-1 border border-gray-300 rounded p-2 bg-white text-black"
               />
             </div>
           )}
@@ -83,7 +83,7 @@ const LoginSignupPage: React.FC = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
               placeholder="Enter a username"
-              className="flex-1 border border-gray-300 rounded p-2 bg-whit text-black"
+              className="flex-1 border border-gray-300 rounded p-2 bg-white text-black"
             />
           </div>
           <div className="mb-4 flex items-center">
